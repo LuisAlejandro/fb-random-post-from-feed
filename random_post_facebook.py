@@ -3,46 +3,65 @@
 
 # http://stackoverflow.com/questions/17197970/facebook-permanent-page-access-token
 
+import sys
 import json
 from random import choice
 from urllib.request import urlopen, Request
 from urllib.parse import urlencode
 from datetime import datetime
-from html.parser import HTMLParser
 
+from utils import utfize, html_unescape, filter_json_index_by_year
 
-def html_unescape(_string):
-    return HTMLParser().unescape(_string)
+facebook_api_end = 'https://graph.facebook.com/156686441067299/feed'
+facebook_access_token = ('EAAF0cGsgXS8BAMniHEKNzK5KPeaWcevyCbu8lwQH0Y'
+                         'FWsLj5VWyvcEyknMh1IYmIxXpZCbJiZC6Slfg3rZBzm'
+                         'R8ZCRpo52sHx7hCWVUXM4Jw3w3aOfU9ANSRZBLcXvFm'
+                         'uEEBQSfHno51gvTAS7d1f0QtrYTxzqZBrSuGwr0q3cwAZDZD')
+json_index_url = 'http://huntingbears.com.ve/static/json/index.json'
 
+print('Starting publication of random post to Facebook')
 
-def utfize(_string):
-    return str(_string).encode('utf-8')
+current_timestamp = int(datetime.now().strftime('%Y%m%d%H%M%S'))
+current_hour = int(datetime.now().strftime('%H'))
 
-FACEBOOK_API_END = 'https://graph.facebook.com/156686441067299/feed'
-FACEBOOK_ACCESS_TOKEN = 'EAAF0cGsgXS8BAEGqIAv9MBVQVVO8Sah2xcwuitg4kFbp0p71iPARuKQgE0cyjk1Wmrz5Wpf3CAczPbPkHKhAaHoiikgC9RQSakWjthib1J1wX6o0gdrI5PjgvufJmvwbady0DZB8QZCaM6hNLn'
-JSON_URL = 'http://huntingbears.com.ve/static/json/index.json'
+if current_hour not in [9, 13, 15, 22]:
+    print('Script wasnt called in a recommended hour. Aborting.')
+    sys.exit(0)
 
-print('Iniciando publicación de artículo aleatorio en Facebook.')
+json_index_content = json.loads(str(urlopen(json_index_url).read(), 'utf-8'))
+json_index_filtered = filter_json_index_by_year(json_index_content)
 
-if int(datetime.now().strftime('%H')) % 3 == 0:
+if not json_index_filtered:
+    print('There are no posts to publish. Aborting.')
+    sys.exit(0)
 
-    JSON_CONTENT = json.loads(str(urlopen(JSON_URL).read(), 'utf-8'))
-    JSON_CONTENT = {j: i for j, i in JSON_CONTENT.items() if int(datetime.strptime(i['date'][:-6], '%Y-%m-%dT%H:%M:%S').strftime('%Y')) >= (int(datetime.now().strftime('%Y'))-1)}
-    RANDOM_POST = choice(list(JSON_CONTENT.keys()))
-    RANDOM_POST_TITLE = utfize(html_unescape(JSON_CONTENT[RANDOM_POST]['title']))
-    RANDOM_POST_LINK = utfize(JSON_CONTENT[RANDOM_POST]['url']+'#'+datetime.now().strftime('%Y%m%d%H%M%S'))
+random_post_id = choice(list(json_index_filtered.keys()))
+random_post_title = '[REPOST] {0}'.format(
+    json_index_filtered[random_post_id]['title'])
+random_post_title = utfize(html_unescape(random_post_title))
+random_post_url = utfize('{0}#{1}'.format(
+    json_index_filtered[random_post_id]['url'],
+    current_timestamp))
 
-    FACEBOOK_API_DATA = {'message': RANDOM_POST_TITLE,
-                         'link': RANDOM_POST_LINK,
-                         'access_token': FACEBOOK_ACCESS_TOKEN}
+facebook_api_data = {'message': random_post_title,
+                     'link': random_post_url,
+                     'access_token': facebook_access_token}
 
-    HTTP_REQUEST = Request(url=FACEBOOK_API_END, method='POST',
-                           data=urlencode(FACEBOOK_API_DATA).encode())
+http_request = Request(url=facebook_api_end, method='POST',
+                       data=urlencode(facebook_api_data).encode())
 
-    while True:
+count = 0
+while count < 6:
+    try:
+        result = json.loads(str(urlopen(http_request).read(), 'utf-8'))
+    except Exception as e:
+        print('There was an error publishing: {0}'.format(e))
+        count += 1
+        continue
 
-        RESULT = json.loads(str(urlopen(HTTP_REQUEST).read(), 'utf-8'))
+    if 'error' in result:
+        count += 1
+        continue
 
-        if 'error' not in RESULT:
-            print('Publicación exitosa: %s' % RANDOM_POST_LINK)
-            break
+    print('Successfully published!: {0}'.format(random_post_url))
+    break
