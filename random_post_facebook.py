@@ -36,8 +36,7 @@ if not json_index_filtered:
     sys.exit(0)
 
 random_post_id = choice(list(json_index_filtered.keys()))
-random_post_title = '[REPOST] {0}'.format(
-    json_index_filtered[random_post_id]['title'])
+random_post_title = json_index_filtered[random_post_id]['title']
 random_post_title = utfize(html_unescape(random_post_title))
 random_post_url = utfize('{0}#{1}'.format(
     json_index_filtered[random_post_id]['url'],
