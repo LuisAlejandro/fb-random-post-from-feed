@@ -5,7 +5,7 @@
 
 ---
 
-Current version: 0.1.0
+Current version: 0.1.1
 
 ## 🎒 Prep Work
 1. Get a facebook permanent access token (explained below) using a facebook account that owns the page where you want to post messages.
