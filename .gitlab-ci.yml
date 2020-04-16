@@ -1,9 +1,0 @@
-image: dockershelf/python:3.5
-
-facebook:
-    script:
-        - python random_post_facebook.py
-
-twitter:
-    script:
-        - python random_post_twitter.py
