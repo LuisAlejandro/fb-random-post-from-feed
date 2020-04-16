@@ -1,13 +1,11 @@
 # Changelog
 
 
-## 0.1.0 (2020-04-15)
+## 0.1.0 (2020-04-16)
 
 ### Changes
 
-* Removing debug info. [Luis Alejandro Martínez Faneyth]
-
-* Improving readme. [Luis Alejandro Martínez Faneyth]
+* Migrating some functions. [Luis Alejandro Martínez Faneyth]
 
 * Adding github actions boilerplate. [Luis Alejandro Martínez Faneyth]
 
