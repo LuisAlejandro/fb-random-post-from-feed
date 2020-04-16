@@ -1,6 +1,13 @@
 # Changelog
 
 
+## 0.1.1 (2020-04-16)
+
+### Changes
+
+* Improving readme. [Luis Alejandro Martínez Faneyth]
+
+
 ## 0.1.0 (2020-04-16)
 
 ### Changes

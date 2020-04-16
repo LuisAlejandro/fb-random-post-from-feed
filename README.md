@@ -5,7 +5,7 @@
 
 ---
 
-Current version: 0.1.0
+Current version: 0.1.1
 
 ## 🎒 Prep Work
 1. Get a facebook permanent access token (explained below) using a facebook account that owns the page where you want to post messages.
@@ -16,7 +16,8 @@ Current version: 0.1.0
 1. Fork this repo.
 2. Go to your fork's `Settings` > `Secrets` > `Add a new secret` for each environment secret (below).
 3. Activate github workflows on `Actions` > `I understand my workflows, go ahead and run them`.
-4. Star your own fork to trigger the initial build. The feed is checked hourly, if you haven't posted anything on your blog on the last hour, nothing will be posted on the initial build.
+4. Star your own fork to trigger the initial build. The action will be triggered hourly but the posts will only publish on the following hours: 9, 13, 15, 22. You can change this by editing line 27 of the entrypoint.py script.
+
 
 ## 🤫 Environment Secrets
 
