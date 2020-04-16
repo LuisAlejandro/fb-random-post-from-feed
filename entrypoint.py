@@ -1,8 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-# http://stackoverflow.com/questions/17197970/facebook-permanent-page-access-token
-
+import os
 import sys
 import json
 from random import choice
@@ -10,16 +9,17 @@ from urllib.request import urlopen, Request
 from urllib.parse import urlencode
 from datetime import datetime
 
+from atoma import parse_rss_bytes
+
 from utils import utfize, html_unescape, filter_json_index_by_year
 
-facebook_api_end = 'https://graph.facebook.com/156686441067299/feed'
-facebook_access_token = ('EAAF0cGsgXS8BAMniHEKNzK5KPeaWcevyCbu8lwQH0Y'
-                         'FWsLj5VWyvcEyknMh1IYmIxXpZCbJiZC6Slfg3rZBzm'
-                         'R8ZCRpo52sHx7hCWVUXM4Jw3w3aOfU9ANSRZBLcXvFm'
-                         'uEEBQSfHno51gvTAS7d1f0QtrYTxzqZBrSuGwr0q3cwAZDZD')
-json_index_url = 'http://huntingbears.com.ve/static/json/index.json'
 
-print('Starting publication of random post to Facebook')
+json_index_content = {}
+facebook_page_id = os.environ.get('FACEBOOK_PAGE_ID')
+facebook_access_token = os.environ.get('FACEBOOK_ACCESS_TOKEN')
+facebook_api_end = 'https://graph.facebook.com/{0}/feed'.format(facebook_page_id)
+feed_url = os.environ.get('FEED_URL')
+feed_data = parse_rss_bytes(urlopen(feed_url).read())
 
 current_timestamp = int(datetime.now().strftime('%Y%m%d%H%M%S'))
 current_hour = int(datetime.now().strftime('%H'))
@@ -28,7 +28,14 @@ if current_hour not in [9, 13, 15, 22]:
     print('Script wasnt called in a recommended hour. Aborting.')
     sys.exit(0)
 
-json_index_content = json.loads(str(urlopen(json_index_url).read(), 'utf-8'))
+for post in feed_data.items:
+    post_timestamp = post.pub_date.strftime('%Y%m%d%H%M%S')
+    json_index_content[post_timestamp] = {
+        'title': post.title,
+        'url': post.guid,
+        'date': post.pub_date
+    }
+
 json_index_filtered = filter_json_index_by_year(json_index_content)
 
 if not json_index_filtered:
