@@ -49,8 +49,7 @@ def filter_json_index_by_year(json_index_content):
     json_index_filtered = {}
     current_year = int(datetime.now().strftime('%Y'))
     for pid, data in json_index_content.items():
-        post_date = datetime.strptime(data['date'][:-6], '%Y-%m-%dT%H:%M:%S')
-        post_year = int(post_date.strftime('%Y'))
+        post_year = int(data['date'].strftime('%Y'))
         if post_year >= (current_year - 2):
             json_index_filtered[pid] = data
     return json_index_filtered

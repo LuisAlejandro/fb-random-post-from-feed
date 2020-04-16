@@ -11,7 +11,7 @@ from datetime import datetime
 
 from atoma import parse_rss_bytes
 
-from utils import utfize, html_unescape, filter_json_index_by_year
+from utils import u, html_unescape, filter_json_index_by_year
 
 
 json_index_content = {}
@@ -44,8 +44,8 @@ if not json_index_filtered:
 
 random_post_id = choice(list(json_index_filtered.keys()))
 random_post_title = json_index_filtered[random_post_id]['title']
-random_post_title = utfize(html_unescape(random_post_title))
-random_post_url = utfize('{0}#{1}'.format(
+random_post_title = u(html_unescape(random_post_title))
+random_post_url = u('{0}#{1}'.format(
     json_index_filtered[random_post_id]['url'],
     current_timestamp))
 
