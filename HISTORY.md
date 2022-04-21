@@ -1,16 +1,30 @@
 # Changelog
 
 
+## 0.2.0 (2022-04-21)
+
+### Changed
+
+* Improving documentation. [Luis Alejandro Martínez Faneyth]
+
+* Using third party library to publish posts. [Luis Alejandro Martínez Faneyth]
+
+
+### Other
+
+* Update FUNDING.yml. [Luis Alejandro]
+
+
 ## 0.1.1 (2020-04-16)
 
-### Changes
+### Changed
 
 * Improving readme. [Luis Alejandro Martínez Faneyth]
 
 
 ## 0.1.0 (2020-04-16)
 
-### Changes
+### Changed
 
 * Migrating some functions. [Luis Alejandro Martínez Faneyth]
 
@@ -24,9 +38,11 @@
 
 * Migrating from Openshift to GitLab. [Luis Alejandro Martínez Faneyth]
 
-### Fix
+
+### Fixed
 
 * Fixing script command. [Luis Alejandro Martínez Faneyth]
+
 
 ### Other
 
@@ -37,5 +53,4 @@
 * S. [Luis Alejandro Martínez Faneyth]
 
 * Creating template. [Template builder]
-
 
