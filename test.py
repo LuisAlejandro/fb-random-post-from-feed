@@ -17,6 +17,7 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 import os
+import time
 import datetime
 from urllib.request import urlopen
 from html import unescape
@@ -64,6 +65,8 @@ status_link = '{0}#{1}'.format(
     today.strftime('%Y%m%d%H%M%S'))
 data = {'message': unescape(random_post_title), 'link': status_link}
 
-graph.post_object(object_id=page_id,
-                  connection='feed',
-                  data=data)
+fb = graph.post_object(object_id=page_id,
+                       connection='feed',
+                       data=data)
+time.sleep(10)
+graph.delete_object(object_id=fb['id'])

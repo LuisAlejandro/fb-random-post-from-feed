@@ -1,12 +1,13 @@
 name: fb-random-post-from-feed
 author: Luis Alejandro Martínez Faneyth
-description: GitHub Action for posting to a facebook page the latest entry from an atom feed
+description: GitHub Action for posting a random entry from an atom feed to a facebook page
 
 runs:
   using: docker
   image: Dockerfile
+  entrypoint: /entrypoint.sh
   args:
-    - entrypoint.py
+    - /entrypoint.py
 
 branding:
   icon: at-sign
