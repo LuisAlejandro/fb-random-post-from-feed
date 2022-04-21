@@ -154,7 +154,7 @@ To find your Page ID:
 
           make image
 
-  * You can execute the tweet script with this command:
+  * You can execute the publish script with this command:
 
           make publish
 
