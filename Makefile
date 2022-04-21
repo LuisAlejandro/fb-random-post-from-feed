@@ -1,18 +1,42 @@
+#!/usr/bin/env make -f
+# -*- makefile -*-
+
+SHELL = bash -e
+
+BASEDIR = $(shell pwd)
+
 
 image:
+	@docker-compose -p fb-random-post-from-feed -f docker-compose.yml build \
+		--force-rm --pull
 
-	@docker build -t luisalejandro/fb-random-post-from-feed:latest .
+start:
+	@docker-compose -p fb-random-post-from-feed -f docker-compose.yml up \
+		--remove-orphans -d
 
-message:
+console: start
+	@docker-compose -p fb-random-post-from-feed -f docker-compose.yml exec \
+		--user luisalejandro fb-random-post-from-feed bash
 
-	@docker run -it --rm -u luisalejandro --env-file .env \
-		-v $(PWD):/home/luisalejandro/fb-random-post-from-feed \
-		-w /home/luisalejandro/fb-random-post-from-feed \
-		luisalejandro/fb-random-post-from-feed:latest python entrypoint.py
+publish: start
+	@docker-compose -p fb-random-post-from-feed -f docker-compose.yml exec \
+		--user luisalejandro fb-random-post-from-feed python3 entrypoint.py
 
-console:
+stop:
+	@docker-compose -p fb-random-post-from-feed -f docker-compose.yml stop
 
-	@docker run -it --rm -u luisalejandro --env-file .env \
-		-v $(PWD):/home/luisalejandro/fb-random-post-from-feed \
-		-w /home/luisalejandro/fb-random-post-from-feed \
-		luisalejandro/fb-random-post-from-feed:latest bash
+down:
+	@docker-compose -p fb-random-post-from-feed -f docker-compose.yml down \
+		--remove-orphans
+
+destroy:
+	@docker-compose -p fb-random-post-from-feed -f docker-compose.yml down \
+		--rmi all --remove-orphans -v
+
+virtualenv: start
+	@docker-compose -p fb-random-post-from-feed -f docker-compose.yml exec \
+		--user luisalejandro fb-random-post-from-feed python3 -m venv --clear --copies ./virtualenv
+	@docker-compose -p fb-random-post-from-feed -f docker-compose.yml exec \
+		--user luisalejandro fb-random-post-from-feed ./virtualenv/bin/pip install -U wheel setuptools
+	@docker-compose -p fb-random-post-from-feed -f docker-compose.yml exec \
+		--user luisalejandro fb-random-post-from-feed ./virtualenv/bin/pip install -r requirements.txt -r requirements-dev.txt

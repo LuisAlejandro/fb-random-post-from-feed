@@ -1,0 +1,87 @@
+name: Pull Request
+
+on:
+  pull_request_target:
+    types:
+      - opened
+      - ready_for_review
+      - synchronize
+      - reopened
+    branches:
+      - develop
+
+jobs:
+  build:
+    name: Build
+    runs-on: ubuntu-20.04
+    if: github.repository == 'LuisAlejandro/fb-random-post-from-feed'
+    strategy:
+      matrix:
+        include:
+          - python-version: "3.8"
+          - python-version: "3.9"
+          - python-version: "3.10"
+          - python-version: "3.11.0-alpha.5"
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v3
+        with:
+          ref: develop
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v3
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Installing dependencies
+        run: pip install -r requirements.txt
+      - name: Testing script
+        env:
+          FACEBOOK_ACCESS_TOKEN: ${{ secrets.FACEBOOK_ACCESS_TOKEN }}
+          FACEBOOK_PAGE_ID: ${{ secrets.FACEBOOK_PAGE_ID }}
+          FEED_URL: ${{ secrets.FEED_URL }}
+        run: python3 test.py
+
+  approve:
+    name: Approve pull request
+    runs-on: ubuntu-20.04
+    if: github.repository == 'LuisAlejandro/fb-random-post-from-feed'
+    needs: build
+    steps:
+      - name: Approve
+        uses: hmarr/auto-approve-action@v2.2.1
+        if: github.actor == 'dependabot[bot]' || github.actor == 'dependabot-preview[bot]'
+        with:
+          github-token: "${{ secrets.PERSONAL_ACCESS_TOKEN }}"
+      - name: Approve
+        uses: hmarr/auto-approve-action@v2.2.1
+        if: github.actor == 'LuisAlejandro'
+        with:
+          github-token: "${{ secrets.GITHUB_TOKEN }}"
+
+  merge:
+    name: Merge pull request
+    runs-on: ubuntu-20.04
+    if: github.repository == 'LuisAlejandro/fb-random-post-from-feed'
+    needs: approve
+    steps:
+      - name: Merge
+        uses: actions/github-script@v6
+        if: github.actor == 'dependabot[bot]' || github.actor == 'dependabot-preview[bot]'
+        with:
+          github-token: "${{ secrets.PERSONAL_ACCESS_TOKEN }}"
+          script: |
+            await github.rest.pulls.merge({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              pull_number: context.payload.pull_request.number
+            })
+      - name: Merge
+        uses: actions/github-script@v6
+        if: github.actor == 'LuisAlejandro'
+        with:
+          github-token: "${{ secrets.GITHUB_TOKEN }}"
+          script: |
+            await github.rest.pulls.merge({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              pull_number: context.payload.pull_request.number
+            })
