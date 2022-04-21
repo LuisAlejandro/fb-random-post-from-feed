@@ -6,7 +6,7 @@
 
 ---
 
-Current version: 0.1.1
+Current version: 0.2.0
 
 ## 🎒 Prep Work
 1. Get a facebook permanent access token (explained below) using a facebook account that owns the page where you want to post messages.
@@ -15,7 +15,7 @@ Current version: 0.1.1
 
 ## 🖥 Workflow Usage
 
-Configure your workflow to use `LuisAlejandro/fb-random-post-from-feed@0.1.1`,
+Configure your workflow to use `LuisAlejandro/fb-random-post-from-feed@0.2.0`,
 and provide the atom feed URL you want to use as the `FEED_URL` env variable.
 
 Provide the access token for your Facebook app as the
@@ -36,7 +36,7 @@ jobs:
   fbpost:
     runs-on: ubuntu-20.04
     steps:
-      - uses: LuisAlejandro/fb-random-post-from-feed@0.1.1
+      - uses: LuisAlejandro/fb-random-post-from-feed@0.2.0
         env:
           FACEBOOK_ACCESS_TOKEN: ${{ secrets.FACEBOOK_ACCESS_TOKEN }}
           FACEBOOK_PAGE_ID: ${{ secrets.FACEBOOK_PAGE_ID }}
