@@ -1,10 +1,4 @@
-<p align='center'>
-  <img src="https://github.com/LuisAlejandro/fb-random-post-from-feed/blob/develop/branding/banner.svg">
-  <h3 align="center">Facebook random post from feed</h3>
-  <p align="center">GitHub Action for posting a random article from an atom feed to a facebook page</p>
-</p>
-
----
+# Development of this app has been halted in favor of [Agoras](https://github.com/LuisAlejandro/agoras)
 
 Current version: 0.2.0
 
